@@ -1,0 +1,66 @@
+﻿<!doctype html>
+<html ng-app="myApp">
+
+<style>
+table, th, td {
+   border: 1px solid black;
+}
+
+    .status_free {
+        background: #ffffff;
+    }
+    .status_waiting {
+        background: #00cc00;
+    }
+    .status_acive {
+        background: #00cc00;
+    }
+    .status_closed {
+        background: #8c8c8c;
+    }
+
+</style>
+<head>
+    <meta charset="utf-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+    <script type="text/javascript">
+        var myApp = angular.module('myApp', []);
+        myApp.controller('phoneController', function ($scope) {
+
+            $scope.talon = [];
+            $scope.talon[0] = {
+
+                time: '8:00',
+
+                status: 'free'
+            }
+        });
+    </script>
+</head>
+<body>
+    <div ng-controller="phoneController">
+        <p>время: {{talon[0].time}}</p>
+        <p>status: {{talon[0].status}} $</p>
+
+    </div>
+
+    <h3>@ViewBag.Message</h3>
+    <h3>@ViewBag.Message17</h3>
+    <table>
+    @for (var i = 0; i < @ViewBag.timePeriods; i++)
+    {
+        <tr>
+                @for (var j = 0; j < @ViewBag.talonsInPeriod; j++)
+                {
+                    var cl = "";
+                    if (i < 2)
+                    {
+                        cl = "class=first";
+                    }
+                    <td @cl>@ViewBag.talons[i* @ViewBag.talonsInPeriod+j].talonNumber</td>
+                }
+        </tr>
+    }
+    </table>
+</body>
+</html>
