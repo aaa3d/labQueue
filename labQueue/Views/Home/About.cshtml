@@ -19,6 +19,38 @@ table, th, td {
         background: #8c8c8c;
     }
 
+
+    .print_talon_button {
+        width: 200px;
+        margin: 20px;
+    }
+    
+    
+    .data_block {
+        border: 3px solid green;
+    } 
+    
+    .data_table {
+        margin: auto;
+        text-align: center;
+        border: 3px solid green;
+        padding: 10px;
+    }
+
+    .bottom_left {
+        float: left;
+        margin: auto;
+        border: 3px solid green;
+        padding: 10px;
+    }
+
+    .bottom_right {
+        float: right;
+        margin: auto;
+        border: 3px solid green;
+        padding: 10px;
+    }
+
 </style>
 <head>
     <meta charset="utf-8">
@@ -35,6 +67,11 @@ table, th, td {
                 status: 'free'
             }
         });
+
+
+      
+
+
     </script>
 </head>
 <body>
@@ -46,21 +83,47 @@ table, th, td {
 
     <h3>@ViewBag.Message</h3>
     <h3>@ViewBag.Message17</h3>
-    <table>
-    @for (var i = 0; i < @ViewBag.timePeriods; i++)
-    {
-        <tr>
-                @for (var j = 0; j < @ViewBag.talonsInPeriod; j++)
-                {
-                    var cl = "";
-                    if (i < 2)
+
+    <div class="data_block">
+        <table class ="data_table">
+            <th>Период</th>
+            @for (var j = 0; j < @ViewBag.talonsInPeriod; j++)
+            {
+                <th>@(j + 1)</th>
+            }
+            @for (var i = 0; i < @ViewBag.timePeriods; i++)
+            {
+                <tr>
+
+                    <td>@ViewBag.talons[i * @ViewBag.talonsInPeriod]["period"]</td>
+
+
+                    @for (var j = 0; j < @ViewBag.talonsInPeriod; j++)
                     {
-                        cl = "class=first";
+                        var talon = @ViewBag.talons[i * @ViewBag.talonsInPeriod + j];
+
+                        var talon_number = talon["number"];
+
+                        var cl = "";
+
+
+                        <td class="@cl">@talon_number</td>
                     }
-                    <td @cl>@ViewBag.talons[i* @ViewBag.talonsInPeriod+j].talonNumber</td>
-                }
-        </tr>
-    }
-    </table>
+                </tr>
+            }
+        </table>
+    </div>
+    <div class="bottom_left">
+        
+        @Html.ActionLink("Талон раньше времени", "About/btn_click/0", "Home")
+        @Html.ActionLink("Талон вовремя", "About/btn_click/1", "Home")
+        @Html.ActionLink("Талон с опазданием", "About/btn_click/2", "Home")
+
+    </div>
+
+    <div class="bottom_right">
+        right
+    </div>
+
 </body>
 </html>

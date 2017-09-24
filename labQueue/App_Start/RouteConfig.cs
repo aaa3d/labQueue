@@ -18,6 +18,12 @@ namespace labQueue
                 url: "{controller}/{action}/{id}",
                 defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
             );
+
+            routes.MapRoute(
+            "AboutRoute",                                              // Route name
+            "{controller}/{action}/{subaction}/{subaction_param}",                           // URL with parameters
+            new { controller = "Home", action = "About", subaction = "", subaction_param = "" }  // Parameter defaults
+        );
         }
     }
 }
