@@ -15,3 +15,30 @@
     <strong>Support:</strong>   <a href="mailto:Support@example.com">Support@example.com</a><br />
     <strong>Marketing:</strong> <a href="mailto:Marketing@example.com">Marketing@example.com</a>
 </address>
+
+
+<script>
+    function success(data) {
+        var json = $.parseJSON(data.responseText);
+        alert(json.someProperty);
+    }
+
+    function send_btn_click(btn_idx) {
+        $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                url: "/Laboratory/Api/",
+                dataType: "json",
+                data: JSON.stringify({ "signal_sender": "John", "signal_name": "btn_click", "signal_param": btn_idx }),
+                success: function (data) { alert(data.result + "," + data.result_descr); }
+        });
+    }
+</script>
+
+<input type="button" onclick="send_btn_click(1)" value="btn0_click"/>
+<input type="button" onclick="send_btn_click(2)" value="btn1_click" />
+<input type="button" onclick="send_btn_click(3)" value="btn2_click" />
+
+
+
+

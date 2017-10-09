@@ -406,6 +406,56 @@ namespace labQueue
             return 0;
         }
 
+        public static int mssqlExecuteSQL(String sql, SqlParameter[] parameters)
+        {
+            //System.Console.WriteLine(sql);
+            SqlTransaction transaction1 = null;
+            SqlConnection conn = null;
+            lock (thisLock)
+            {
+                SqlCommand cmd = null;
+                try
+                {
+                    conn = mssqlGetConnection();
+                    cmd = conn.CreateCommand();
+
+                    transaction1 =
+                        cmd.Connection.BeginTransaction(IsolationLevel.ReadCommitted);
+                    //cmd.Connection = mssqlGetConnection();
+                    cmd.Transaction = transaction1;
+
+                    cmd.CommandText = sql;
+
+                    if (parameters != null)
+                    {
+                        foreach (SqlParameter par in parameters)
+                        {
+                            cmd.Parameters.AddWithValue(par.ParameterName, par.Value);
+                        }
+                    }
+                    cmd.ExecuteNonQuery();
+                    transaction1.Commit();
+
+                }
+                catch (Exception ex)
+                {
+                    // if (transaction1!=null)
+                    //     transaction1.Rollback();
+                    //MessageBox.Show(ex.Message);
+                    System.Console.WriteLine(DateTime.Now + ": SQL_EXCEPTION: " + ex.Message);
+                }
+                finally
+                {
+                    if (cmd != null)
+                        cmd.Dispose();
+                    if (conn != null)
+                        conn.Close();
+                }
+            }
+
+            return 0;
+        }
+
         public static DataTable mssqlRead(String query, SqlParameter [] parameters )
         {
             //System.Console.WriteLine(query);

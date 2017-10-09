@@ -1,0 +1,55 @@
+﻿<!doctype html>
+<html ng-app="myApp">
+
+<style>
+    .status_free {
+        background: #ffffff;
+    }
+    .status_waiting {
+        background: #00cc00;
+    }
+    .status_acive {
+        background: #ff6a00;
+    }
+    .status_closed {
+        background: #8c8c8c;
+    }
+</style>
+<head>
+    <meta charset="utf-8">
+
+    
+    
+
+
+</head>
+<body>
+    
+    <h3>Электронная очередь лаборатории забора крови</h3>
+
+
+
+
+    
+        <p>Активные талоны:</p>
+        @foreach (var active_talon in @ViewBag.active_talons)
+        {
+            if (@active_talon["status"] == 2)    //активные, вызов к лаборанту
+            {
+                @(active_talon["laborant"] +": "+ active_talon["number"])<br />
+            }
+        }
+
+        <p>Очередь талонов:</p>
+        @foreach (var active_talon in @ViewBag.active_talons)
+        {
+            if (@active_talon["status"] == 1)    //активные, вызов к лаборанту
+            {
+                @(active_talon["number"]+ " ")
+            }
+        }
+        <br />
+    
+
+</body>
+</html>

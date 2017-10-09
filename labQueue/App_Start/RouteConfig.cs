@@ -23,7 +23,13 @@ namespace labQueue
             "AboutRoute",                                              // Route name
             "{controller}/{action}/{subaction}/{subaction_param}",                           // URL with parameters
             new { controller = "Home", action = "About", subaction = "", subaction_param = "" }  // Parameter defaults
-        );
+            );
+
+            routes.MapRoute(
+            "ApiRoute",
+            "{controller}/{action}/{signal_sender}/{signal_name}/{signal_param}",                           
+            new { controller = "Laboratory", action = "Api", signal_sender = "", signal_name = "", signal_param="" }  
+            );
         }
     }
 }

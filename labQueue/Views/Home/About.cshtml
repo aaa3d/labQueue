@@ -13,7 +13,7 @@ table, th, td {
         background: #00cc00;
     }
     .status_acive {
-        background: #00cc00;
+        background: #ff6a00;
     }
     .status_closed {
         background: #8c8c8c;
@@ -30,7 +30,7 @@ table, th, td {
         border: 3px solid green;
     } 
     
-    .data_table {
+    .data_table1 {
         margin: auto;
         text-align: center;
         border: 3px solid green;
@@ -54,37 +54,65 @@ table, th, td {
 </style>
 <head>
     <meta charset="utf-8">
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
-    <script type="text/javascript">
-        var myApp = angular.module('myApp', []);
-        myApp.controller('phoneController', function ($scope) {
 
-            $scope.talon = [];
-            $scope.talon[0] = {
+    
+    <script>
+        function success(data) {
+            var json = $.parseJSON(data.responseText);
+            alert(json.someProperty);
+        }
 
-                time: '8:00',
+        function send_btn_click(btn_idx) {
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                url: "/Laboratory/DeviceApi/",
+                dataType: "json",
+                data: JSON.stringify({ "signal_sender": "John", "signal_name": "btn_click", "signal_param": btn_idx }),
+                //success: function (data) { alert(data.result + "," + data.result_descr); }
+                success: function (data) { location.reload(); }
+                
+            });
+        }
 
-                status: 'free'
-            }
-        });
+        function print_talon(talon_number, talon_date) {
 
+        }
 
-      
+        function print_next_talon(period_number) {
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                url: "/Laboratory/AjaxApi/",
+                dataType: "json",
+                data: JSON.stringify({ "signal_name": "btn_click", "signal_param": period_number }),
+                success: function (data)
+                {
+                    location.reload();
+                    if (data.result == "NEXT_TALON_OK")
+                        print_talon(data.number, data.print_date);
+                    else
+                        alert("Ошибка выдачи талона: " + data.result_descr);
+                }
 
-
+            });
+        }
     </script>
+
+
 </head>
 <body>
-    <div ng-controller="phoneController">
-        <p>время: {{talon[0].time}}</p>
-        <p>status: {{talon[0].status}} $</p>
-
-    </div>
-
+    <!--
     <h3>@ViewBag.Message</h3>
     <h3>@ViewBag.Message17</h3>
+        -->
 
-    <div class="data_block">
+    <h3>Электронная очередь лаборатории забора крови</h3>
+
+
+
+
+    <div >
         <table class ="data_table">
             <th>Период</th>
             @for (var j = 0; j < @ViewBag.talonsInPeriod; j++)
@@ -95,7 +123,7 @@ table, th, td {
             {
                 <tr>
 
-                    <td>@ViewBag.talons[i * @ViewBag.talonsInPeriod]["period"]</td>
+                    <td> <input type="button" onclick='print_next_talon(@i)' value='@ViewBag.talons[i * @ViewBag.talonsInPeriod]["period"] ' />  </td>
 
 
                     @for (var j = 0; j < @ViewBag.talonsInPeriod; j++)
@@ -103,8 +131,16 @@ table, th, td {
                         var talon = @ViewBag.talons[i * @ViewBag.talonsInPeriod + j];
 
                         var talon_number = talon["number"];
-
+                        var talon_status = talon["status"];
                         var cl = "";
+                        if (talon_status == 0)
+                            cl = "status_free";
+                        if (talon_status == 1)
+                            cl = "status_waiting";
+                        if (talon_status == 2)
+                            cl = "status_acive";
+                        if (talon_status == 3)
+                            cl = "status_closed";
 
 
                         <td class="@cl">@talon_number</td>
@@ -112,18 +148,31 @@ table, th, td {
                 </tr>
             }
         </table>
-    </div>
-    <div class="bottom_left">
-        
-        @Html.ActionLink("Талон раньше времени", "About/btn_click/0", "Home")
-        @Html.ActionLink("Талон вовремя", "About/btn_click/1", "Home")
-        @Html.ActionLink("Талон с опазданием", "About/btn_click/2", "Home")
+        <p>Активные талоны:</p>
+        @foreach (var active_talon in @ViewBag.active_talons)
+        {
+            if (@active_talon["status"] == 2)    //активные, вызов к лаборанту
+            {
+                @(active_talon["laborant"] +": "+ active_talon["number"])<br />
+            }
+        }
 
-    </div>
+        <p>Очередь талонов:</p>
+        @foreach (var active_talon in @ViewBag.active_talons)
+        {
+            if (@active_talon["status"] == 1)    //активные, вызов к лаборанту
+            {
+                @(active_talon["number"]+ " ")
+            }
+        }
+        <br />
 
-    <div class="bottom_right">
-        right
+
+        <input type="button" onclick="send_btn_click(1)" value="btn0_click" />
+        <input type="button" onclick="send_btn_click(2)" value="btn1_click" />
+        <input type="button" onclick="send_btn_click(3)" value="btn2_click" />
     </div>
+    
 
 </body>
 </html>
